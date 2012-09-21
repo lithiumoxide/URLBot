@@ -25,13 +25,20 @@ s.connect(network, port, nick, ircname=name)
 s.join(channel)
 
 def handleTiny(connection, event):
-	if event.arguments()[0].lower().find('http') == 0:
-		line = event.arguments()[0]
-		if len(line) > testlen:
-			u = re.match(r'https?:\/\/([\w.]+\/?)\S*', line, re.M|re.I)
-			url = u.group()
-			tinyurl = urllib2.urlopen(apiurl + url).read()
-			s.privmsg(channel, tinyurl)
+	line = event.arguments()[0]
+	test = line.split()
+
+	for j in range(0,len(test)):
+		try:
+			if test[j].find('http') != -1:
+				u = re.match(r'https?:\/\/([\w.]+\/?)\S*', test[j], re.M|re.I)
+				url = u.group()
+				if len(url) > testlen:
+					tinyurl = urllib2.urlopen(apiurl + url).read()
+					s.privmsg(channel, tinyurl)
+
+		except:
+			pass
 			
 def handleIsUp(connection, event):
   if event.arguments()[0].lower().find('!isup') == 0:
